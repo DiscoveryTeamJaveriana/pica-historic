@@ -1,0 +1,149 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: "API Historicos"
+basePath: "/c3p"
+schemes:
+  - https
+paths:
+  "/v1/Portal/Historico/{Codigo}":
+    get:
+      tags:
+        - "Inspeccion"
+      operationId: getHistorico
+      summary: Consultar Historico por Supervisor, Empleado o Locación
+      description: Consultar Historico por Supervisor, Empleado o Locación
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: X-RqUID
+          description: Identificador único del mensaje.
+          in: header
+          required: true
+          type: string
+          maxLength: 36
+          minLength: 1
+        - name: TipoConsulta
+          description: Supervisor, Empleado o Locación.
+          in: header
+          required: true
+          type: string
+          maxLength: 36
+          minLength: 1
+        - name: Codigo
+          description: Codigo del elemento.
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: exitoso
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/RespGetHistorico"
+          headers:
+            X-RqUID:
+              type: string
+              description: Identificador único del mensaje.
+        '206':
+          description: Error en la transacción
+          schema:
+            $ref: '#/definitions/Error'
+          headers:
+            X-RqUID:
+              type: string
+              description: Identificador único del mensaje.
+  "/v1/Portal/Historico/Fecha":
+    get:
+      tags:
+        - "Inspeccion"
+      operationId: getHistoricoFecha
+      summary: Consultar Historico por Fecha
+      description: Consultar Historico por fecha
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: X-RqUID
+          description: Identificador único del mensaje.
+          in: header
+          required: true
+          type: string
+          maxLength: 36
+          minLength: 1
+        - name: FechaInicio
+          description: Fecha inicio de la consulta
+          in: header
+          required: true
+          type: string
+          maxLength: 36
+          minLength: 1
+        - name: FechaFin
+          description: Fecha final de la consulta
+          in: header
+          required: true
+          type: string
+          maxLength: 36
+          minLength: 1
+      responses:
+        '200':
+          description: exitoso
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/RespGetHistorico"
+          headers:
+            X-RqUID:
+              type: string
+              description: Identificador único del mensaje.
+        '206':
+          description: Error en la transacción
+          schema:
+            $ref: '#/definitions/Error'
+          headers:
+            X-RqUID:
+              type: string
+              description: Identificador único del mensaje.
+definitions:
+  RespGetHistorico:
+    type: object
+    properties:
+      Codigo:
+        type: string
+      CodigoSupervisor:
+        type: string
+      CodigoLocacion:
+        type: string
+      CodigoEmpleado:
+        type: string
+      Tipo:
+        type: string
+      Fecha:
+        type: string
+      Titulo:
+        type: string
+      Descripcion:
+        type: string
+      Aprobado:
+        type: boolean
+      Novedad:
+        type: boolean
+      DescripcionNovedad:
+        type: string
+      AccionMejora:
+        type: boolean
+      DescripcionAccionMejora:
+        type: string
+      Comentario:
+        type: string
+  Error:
+    type: object
+    properties:
+      Codigo:
+        type: string
+      Mensaje:
+        type: string
