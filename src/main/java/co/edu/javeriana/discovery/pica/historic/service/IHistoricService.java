@@ -2,9 +2,9 @@ package co.edu.javeriana.discovery.pica.historic.service;
 
 import co.edu.javeriana.discovery.pica.historic.controller.model.RespGetHistorico;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface IHistoricService {
-    ArrayList<RespGetHistorico> getHistorico (String rquid, String tipoConsulta, String codigo);
-    ArrayList<RespGetHistorico> getHistoricoFecha (String rquid, String fechaInicio, String fechaFin);
+    List<RespGetHistorico> getHistorico (String rquid, String tipoConsulta, String codigo);
+    List<RespGetHistorico> getHistoricoFecha (String rquid, String fechaInicio, String fechaFin);
 }

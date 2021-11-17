@@ -1,98 +1,50 @@
 package co.edu.javeriana.discovery.pica.historic.service.impl;
 
 import co.edu.javeriana.discovery.pica.historic.controller.model.RespGetHistorico;
+import co.edu.javeriana.discovery.pica.historic.mapper.HistoricMapper;
+import co.edu.javeriana.discovery.pica.historic.repository.InspectionRepository;
 import co.edu.javeriana.discovery.pica.historic.service.IHistoricService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class HistoricService implements IHistoricService {
 
+    private final InspectionRepository inspectionRepository;
+
     @Override
-    public ArrayList<RespGetHistorico> getHistorico(String rquid, String tipoConsulta, String codigo) {
-        log.info("Panic implement me !");
-        ArrayList<RespGetHistorico> respGetHistoricos = new ArrayList<RespGetHistorico>();
-        RespGetHistorico respGetHistorico = new RespGetHistorico();
-        respGetHistorico.setCodigo("123");
-        respGetHistorico.setCodigoSupervisor("123");
-        respGetHistorico.setCodigoLocacion("123");
-        respGetHistorico.setCodigoEmpleado("123");
-        respGetHistorico.setTipo("Tipo");
-        respGetHistorico.setFecha("10/10/10");
-        respGetHistorico.setTitulo("Titulo");
-        respGetHistorico.setDescripcion("Descripcion");
-        respGetHistorico.setAprobado(true);
-        respGetHistorico.setNovedad(true);
-        respGetHistorico.setDescripcionNovedad("Descipcion");
-        respGetHistorico.setAccionMejora(true);
-        respGetHistorico.setDescripcionAccionMejora("Descripcion");
-        respGetHistorico.setComentario("Comentario");
+    public List<RespGetHistorico> getHistorico(String rquid, String tipoConsulta, String codigo) {
 
-        RespGetHistorico respGetHistorico2 = new RespGetHistorico();
-        respGetHistorico2.setCodigo("123");
-        respGetHistorico2.setCodigoSupervisor("123");
-        respGetHistorico2.setCodigoLocacion("123");
-        respGetHistorico2.setCodigoEmpleado("123");
-        respGetHistorico2.setTipo("Tipo");
-        respGetHistorico2.setFecha("10/10/10");
-        respGetHistorico2.setTitulo("Titulo");
-        respGetHistorico2.setDescripcion("Descripcion");
-        respGetHistorico2.setAprobado(true);
-        respGetHistorico2.setNovedad(true);
-        respGetHistorico2.setDescripcionNovedad("Descipcion");
-        respGetHistorico2.setAccionMejora(true);
-        respGetHistorico2.setDescripcionAccionMejora("Descripcion");
-        respGetHistorico2.setComentario("Comentario");
+        List<RespGetHistorico> respGetHistoricoList = null;
+        if (tipoConsulta.equals("Supervisor")) {
+            respGetHistoricoList = inspectionRepository.findAllBySupervisorId(codigo).stream()
+                    .map(HistoricMapper::mapInspectionToRespGetHistorico)
+                    .collect(Collectors.toList());
+        } else {
+            respGetHistoricoList = inspectionRepository.findAllByEmployeeId(codigo).stream()
+                    .map(HistoricMapper::mapInspectionToRespGetHistorico)
+                    .collect(Collectors.toList());
+        }
 
-        respGetHistoricos.add(respGetHistorico);
-        respGetHistoricos.add(respGetHistorico2);
-
-        return respGetHistoricos;
-
+        return respGetHistoricoList;
     }
 
     @Override
-    public ArrayList<RespGetHistorico> getHistoricoFecha(String rquid, String fechaInicio, String fechaFin) {
-        log.info("Panic implement me !");
-        ArrayList<RespGetHistorico> respGetHistoricos = new ArrayList<RespGetHistorico>();
-        RespGetHistorico respGetHistorico = new RespGetHistorico();
-        respGetHistorico.setCodigo("123");
-        respGetHistorico.setCodigoSupervisor("123");
-        respGetHistorico.setCodigoLocacion("123");
-        respGetHistorico.setCodigoEmpleado("123");
-        respGetHistorico.setTipo("Tipo");
-        respGetHistorico.setFecha("10/10/10");
-        respGetHistorico.setTitulo("Titulo");
-        respGetHistorico.setDescripcion("Descripcion");
-        respGetHistorico.setAprobado(true);
-        respGetHistorico.setNovedad(true);
-        respGetHistorico.setDescripcionNovedad("Descipcion");
-        respGetHistorico.setAccionMejora(true);
-        respGetHistorico.setDescripcionAccionMejora("Descripcion");
-        respGetHistorico.setComentario("Comentario");
+    public List<RespGetHistorico> getHistoricoFecha(String rquid, String fechaInicio, String fechaFin) {
 
-        RespGetHistorico respGetHistorico2 = new RespGetHistorico();
-        respGetHistorico2.setCodigo("123");
-        respGetHistorico2.setCodigoSupervisor("123");
-        respGetHistorico2.setCodigoLocacion("123");
-        respGetHistorico2.setCodigoEmpleado("123");
-        respGetHistorico2.setTipo("Tipo");
-        respGetHistorico2.setFecha("10/10/10");
-        respGetHistorico2.setTitulo("Titulo");
-        respGetHistorico2.setDescripcion("Descripcion");
-        respGetHistorico2.setAprobado(true);
-        respGetHistorico2.setNovedad(true);
-        respGetHistorico2.setDescripcionNovedad("Descipcion");
-        respGetHistorico2.setAccionMejora(true);
-        respGetHistorico2.setDescripcionAccionMejora("Descripcion");
-        respGetHistorico2.setComentario("Comentario");
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
 
-        respGetHistoricos.add(respGetHistorico);
-        respGetHistoricos.add(respGetHistorico2);
-
-        return respGetHistoricos;
+        return inspectionRepository
+                .findAllByDateBetween(LocalDate.parse(fechaInicio, formatter), LocalDate.parse(fechaFin, formatter)).stream()
+                .map(HistoricMapper::mapInspectionToRespGetHistorico)
+                .collect(Collectors.toList());
     }
 }

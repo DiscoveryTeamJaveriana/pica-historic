@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -41,11 +41,11 @@ public class HistoricController {
     }
 
     @GetMapping("/Historico/{Codigo}")
-    public ResponseEntity<ArrayList<RespGetHistorico>> getHistorico(@RequestHeader(value=XRQUID) String xRqUID,@RequestHeader(value=TIPO) String tipoConsulta, @PathVariable(CODIGO) String codigo) throws JsonProcessingException {
+    public ResponseEntity<List<RespGetHistorico>> getHistorico(@RequestHeader(value=XRQUID) String xRqUID, @RequestHeader(value=TIPO) String tipoConsulta, @PathVariable(CODIGO) String codigo) throws JsonProcessingException {
         log.info("Get Historic by type for RqUID {}", xRqUID);
         HistoricController.this.tracer.currentSpan().tag(RQUID,xRqUID);
         HistoricController.this.tracer.currentSpan().tag(TIPO,tipoConsulta);
-        ArrayList<RespGetHistorico> response = historicService.getHistorico(xRqUID,tipoConsulta,codigo);
+        List<RespGetHistorico> response = historicService.getHistorico(xRqUID,tipoConsulta,codigo);
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(response);
         HistoricController.this.tracer.currentSpan().tag(RESPONSE,json);
@@ -54,12 +54,12 @@ public class HistoricController {
     }
 
     @GetMapping("/Historico/Fecha")
-    public ResponseEntity<ArrayList<RespGetHistorico>> getHistoricoFecha(@RequestHeader(value=XRQUID) String xRqUID,@RequestHeader(value=FECHAINICIO) String fechaInicio, @RequestHeader(value=FECHAFIN) String fechaFin) throws JsonProcessingException {
+    public ResponseEntity<List<RespGetHistorico>> getHistoricoFecha(@RequestHeader(value=XRQUID) String xRqUID,@RequestHeader(value=FECHAINICIO) String fechaInicio, @RequestHeader(value=FECHAFIN) String fechaFin) throws JsonProcessingException {
         log.info("Get Historic by date for RqUID {}", xRqUID);
         HistoricController.this.tracer.currentSpan().tag(RQUID,xRqUID);
         HistoricController.this.tracer.currentSpan().tag(FECHAINICIO,fechaInicio);
         HistoricController.this.tracer.currentSpan().tag(FECHAFIN,fechaFin);
-        ArrayList<RespGetHistorico>  response = historicService.getHistoricoFecha(xRqUID,fechaInicio,fechaFin);
+        List<RespGetHistorico>  response = historicService.getHistoricoFecha(xRqUID,fechaInicio,fechaFin);
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(response);
         HistoricController.this.tracer.currentSpan().tag(RESPONSE,json);
