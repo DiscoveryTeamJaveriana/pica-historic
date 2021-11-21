@@ -24,27 +24,38 @@ public class HistoricService implements IHistoricService {
     public List<RespGetHistorico> getHistorico(String rquid, String tipoConsulta, String codigo) {
 
         List<RespGetHistorico> respGetHistoricoList = null;
-        if (tipoConsulta.equals("Supervisor")) {
-            respGetHistoricoList = inspectionRepository.findAllBySupervisorId(codigo).stream()
-                    .map(HistoricMapper::mapInspectionToRespGetHistorico)
-                    .collect(Collectors.toList());
-        } else {
-            respGetHistoricoList = inspectionRepository.findAllByEmployeeId(codigo).stream()
-                    .map(HistoricMapper::mapInspectionToRespGetHistorico)
-                    .collect(Collectors.toList());
-        }
+        try {
+            if (tipoConsulta.equals("Supervisor")) {
+                respGetHistoricoList = inspectionRepository.findAllBySupervisorId(codigo).stream()
+                        .map(HistoricMapper::mapInspectionToRespGetHistorico)
+                        .collect(Collectors.toList());
+            } else {
+                respGetHistoricoList = inspectionRepository.findAllByEmployeeId(codigo).stream()
+                        .map(HistoricMapper::mapInspectionToRespGetHistorico)
+                        .collect(Collectors.toList());
+            }
 
-        return respGetHistoricoList;
+            return respGetHistoricoList;
+        }catch (Exception e) {
+            log.info("Error al consultar historico");
+            throw e;
+        }
     }
 
     @Override
     public List<RespGetHistorico> getHistoricoFecha(String rquid, String fechaInicio, String fechaFin) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
-
-        return inspectionRepository
-                .findAllByDateBetween(LocalDate.parse(fechaInicio, formatter), LocalDate.parse(fechaFin, formatter)).stream()
-                .map(HistoricMapper::mapInspectionToRespGetHistorico)
-                .collect(Collectors.toList());
+        try {
+            return inspectionRepository
+                    .findAllByDateBetween(LocalDate.parse(fechaInicio, formatter), LocalDate.parse(fechaFin, formatter)).stream()
+                    .map(HistoricMapper::mapInspectionToRespGetHistorico)
+                    .collect(Collectors.toList());
+        }catch (Exception e) {
+            log.info("Error al crear historico");
+            throw e;
+        }
     }
+
 }
+
